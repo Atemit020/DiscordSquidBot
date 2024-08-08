@@ -9,6 +9,10 @@ import os
 from pymongo import MongoClient
 import platform
 import decorators.decorator as dc
+from PIL import Image
+from PIL import ImageFilter
+import PIL
+
 
 db = MongoClient(os.getenv("MONGO_DB_URI"), server_api=ServerApi('1'))["test"]
 AIRole = os.getenv("AIRole")
@@ -152,6 +156,32 @@ class FunCommands(commands.Cog):
         
         embed.set_image(url=avatar_url)
         await ctx.reply(embed=embed)
+
+
+    @commands.command(name="pet",
+                      help="Pet gif for the pinged guy",
+                      usage="sq!pet (@user or userID)")
+    async def pet(self, ctx, *args):
+        if args:
+            user = await dc.mention_or_fetch_user(ctx,args[0])
+        else:
+            user = ctx.author
+
+        avatar_url = user.avatar
+        
+        await user.avatar.save("p.png")
+        m_img = Image.open("p.png")
+        m2 = m_img.filter(ImageFilter.MinFilter(3))
+        m2.save("t.png")
+
+
+
+        
+
+        await ctx.reply(file=discord.File("t.png"))
+
+
+
 
 async def setup(bot): # set async function
     await bot.add_cog(FunCommands(bot)) # Use await
