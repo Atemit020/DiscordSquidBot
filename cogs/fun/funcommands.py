@@ -21,6 +21,7 @@ class FunCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+
      #ADMIN COMMANDS
     @commands.command(name="say", 
                       role="Admin", 
@@ -162,11 +163,9 @@ class FunCommands(commands.Cog):
                       help="Pet gif for the pinged guy",
                       usage="sq!pet (@user or userID)")
     async def pet(self, ctx, *args):
-        if args:
-            user = await dc.mention_or_fetch_user(ctx,args[0])
-        else:
-            user = ctx.author
-
+        msg = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+        user = msg.author
+        
         avatar_url = user.avatar
         
         await user.avatar.save("p.png")
